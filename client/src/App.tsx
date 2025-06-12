@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import RegisterForm from "./pages/register";
 import LoginForm from "./pages/login";
 import DailyDataForm from "./pages/dailyEntry";
+import SummaryPage from "./pages/summary"; 
 
 const isLoggedIn = !!localStorage.getItem("token");
 
@@ -15,6 +16,10 @@ export default function App() {
         <Route
           path="/entry"
           element={isLoggedIn ? <DailyDataForm /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/summary"
+          element={isLoggedIn ? <SummaryPage /> : <Navigate to="/login" />}
         />
       </Routes>
     </Router>

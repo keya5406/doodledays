@@ -98,7 +98,7 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #f0bfa5;
 }
 button:focus,
 button:focus-visible {
@@ -225,3 +225,6 @@ input[type="number"] {
     @apply bg-background text-foreground;
   }
 }
+
+
+

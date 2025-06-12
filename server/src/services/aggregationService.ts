@@ -42,6 +42,5 @@ export async function getAggregatedData(userId: string, startDate: Date, endDate
             maxProductivity: 0
         };
     }
-
     return aggregation[0];
 }
