@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js";
 import dailyRoutes from "./routes/daily.route.js"; 
+import aggregationRoutes from "./routes/aggregation.routes.js";
 import cors from "cors";
 
 
@@ -21,6 +22,7 @@ app.use(cors({
 app.use("/api/auth", authRoutes);
 
 app.use("/api/daily", dailyRoutes);
+app.use("/api/aggregation", aggregationRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI!)
