@@ -3,7 +3,7 @@ import RegisterForm from "./pages/register";
 import LoginForm from "./pages/login";
 import DailyDataForm from "./pages/dailyEntry";
 import SummaryPage from "./pages/summary"; 
-import { AnalyticsDashboard } from "./components/dashboard/AnalyticsDashboard";
+import  DashboardPage  from "./pages/AnalyticsDashboard";
 
 const isLoggedIn = !!localStorage.getItem("token");
 
@@ -16,7 +16,7 @@ export default function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/entry" element={isLoggedIn ? <DailyDataForm /> : <Navigate to="/login" />} />
         <Route path="/summary" element={isLoggedIn ? <SummaryPage /> : <Navigate to="/login" />} />
-        <Route path="/dashboard" element={isLoggedIn ? <AnalyticsDashboard /> : <Navigate to="/login" />} />
+        <Route path="/dashboard" element={isLoggedIn ? <DashboardPage /> : <Navigate to="/login" />} />
       </Routes>
     </Router>
   );
