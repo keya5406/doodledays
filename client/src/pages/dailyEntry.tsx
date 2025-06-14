@@ -8,6 +8,15 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { HoverButton } from "@/components/ui/HoverButton";
 
+// Mood options
+const moodOptions = [
+  "Happy",
+  "Sad",
+  "Anxious",
+  "Energetic",
+  "Stressed",
+  "Relaxed",
+];
 
 export const DailyEntrySchema = z.object({
   date: z.preprocess((arg) => {
@@ -15,7 +24,7 @@ export const DailyEntrySchema = z.object({
       return new Date(arg);
     }
   }, z.date()),
-  mood: z.string(),
+  mood: z.array(z.string()),
   productivity: z.number(),
   sleepHours: z.number(),
   expenses: z.array(
@@ -34,7 +43,6 @@ export const DailyEntrySchema = z.object({
 
 export type DailyEntry = z.infer<typeof DailyEntrySchema>;
 
-// Resolver typed correctly
 const resolver: Resolver<DailyEntry> = zodResolver(DailyEntrySchema) as Resolver<DailyEntry>;
 
 export default function DailyDataForm() {
@@ -48,7 +56,7 @@ export default function DailyDataForm() {
     resolver,
     defaultValues: {
       date: new Date(),
-      mood: "",
+      mood: [],
       productivity: 5,
       sleepHours: 0,
       expenses: [{ amount: 0, description: "" }],
@@ -56,25 +64,17 @@ export default function DailyDataForm() {
     },
   });
 
-  // Field arrays for expenses and tasks
   const {
     fields: expenseFields,
     append: appendExpense,
     remove: removeExpense,
-  } = useFieldArray({
-    control,
-    name: "expenses",
-  });
+  } = useFieldArray({ control, name: "expenses" });
 
   const {
     fields: taskFields,
     append: appendTask,
     remove: removeTask,
-  } = useFieldArray({
-    control,
-    name: "tasks",
-  });
-
+  } = useFieldArray({ control, name: "tasks" });
 
   const onSubmit = async (data: DailyEntry) => {
     try {
@@ -86,13 +86,11 @@ export default function DailyDataForm() {
     }
   };
 
-
-
   return (
     <div className="flex items-center justify-center min-h-screen w-screen bg-gradient-to-r from-pink-100 via-white to-white px-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className=" max-w-2xl w-full p-6 bg-[var(--color-sand)] rounded-2xl shadow-md"
+        className="max-w-2xl w-full p-6 bg-[var(--color-sand)] rounded-2xl shadow-md"
       >
         <h1 className="text-3xl font-bold text-[var(--color-peach)] mb-6 text-center">
           Today’s Doodle
@@ -109,25 +107,21 @@ export default function DailyDataForm() {
             {...register("date", { valueAsDate: true })}
             className="mt-1 bg-white rounded-lg border border-[var(--color-cloud)]"
           />
-          {errors.date && (
-            <p className="text-[var(--color-rose)] text-sm">{errors.date.message}</p>
-          )}
+          {errors.date && <p className="text-[var(--color-rose)] text-sm">{errors.date.message}</p>}
         </div>
 
-        {/* Mood */}
+        {/* Mood (Checkbox group) */}
         <div className="mb-4">
-          <Label htmlFor="mood" className="font-semibold text-[var(--color-ink)]">
-            Mood
-          </Label>
-          <Input
-            id="mood"
-            placeholder="How are you feeling today?"
-            {...register("mood")}
-            className="mt-1 bg-white rounded-lg border border-[var(--color-cloud)]"
-          />
-          {errors.mood && (
-            <p className="text-[var(--color-rose)] text-sm">{errors.mood.message}</p>
-          )}
+          <Label className="font-semibold text-[var(--color-ink)] mb-2">Mood</Label>
+          <div className="grid grid-cols-2 gap-2">
+            {moodOptions.map((mood) => (
+              <label key={mood} className="flex items-center gap-2 text-[var(--color-ink)]">
+                <input type="checkbox" value={mood} {...register("mood")} className="cursor-pointer" />
+                {mood}
+              </label>
+            ))}
+          </div>
+          {errors.mood && <p className="text-[var(--color-rose)] text-sm">{errors.mood.message}</p>}
         </div>
 
         {/* Productivity */}
@@ -155,7 +149,6 @@ export default function DailyDataForm() {
           />
         </div>
 
-
         {/* Sleep Hours */}
         <div className="mb-4">
           <Label htmlFor="sleepHours" className="font-semibold text-[var(--color-ink)]">
@@ -170,16 +163,12 @@ export default function DailyDataForm() {
             placeholder="e.g., 6.5"
             className="mt-1 bg-white rounded-lg border border-[var(--color-cloud)] no-spinner"
           />
-          {errors.sleepHours && (
-            <p className="text-[var(--color-rose)] text-sm">{errors.sleepHours.message}</p>
-          )}
+          {errors.sleepHours && <p className="text-[var(--color-rose)] text-sm">{errors.sleepHours.message}</p>}
         </div>
 
         {/* Expenses */}
         <div className="mb-6">
-          <Label className="font-semibold text-[var(--color-ink)] mb-2 block">
-            Expenses
-          </Label>
+          <Label className="font-semibold text-[var(--color-ink)] mb-2 block">Expenses</Label>
           {expenseFields.map((field, index) => (
             <div key={field.id} className="flex gap-2 items-center mb-2">
               <Input
@@ -216,9 +205,7 @@ export default function DailyDataForm() {
 
         {/* Tasks */}
         <div className="mb-6">
-          <Label className="font-semibold text-[var(--color-ink)] mb-2 block">
-            Tasks
-          </Label>
+          <Label className="font-semibold text-[var(--color-ink)] mb-2 block">Tasks</Label>
           {taskFields.map((field, index) => (
             <div key={field.id} className="flex items-center gap-2 mb-2">
               <Input
@@ -227,11 +214,7 @@ export default function DailyDataForm() {
                 className="flex-1 bg-white rounded-lg border border-[var(--color-cloud)]"
               />
               <label className="flex items-center gap-1 text-[var(--color-ink)]">
-                <input
-                  type="checkbox"
-                  {...register(`tasks.${index}.completed`)}
-                  className="cursor-pointer"
-                />
+                <input type="checkbox" {...register(`tasks.${index}.completed`)} className="cursor-pointer" />
                 Completed
               </label>
               <HoverButton
@@ -251,19 +234,12 @@ export default function DailyDataForm() {
             type="button"
             size="sm"
             className="text-[var(--color-sky)] font-semibold"
-
           />
         </div>
 
         {/* Submit */}
-        <HoverButton
-          label="Submit Entry"
-          hoverLabel="Ready to Submit"
-          isSubmitting={isSubmitting}
-          type="submit"
-          size="lg"
-        />
-      </form >
-    </div >
+        <HoverButton label="Submit Entry" hoverLabel="Ready to Submit" isSubmitting={isSubmitting} type="submit" size="lg" />
+      </form>
+    </div>
   );
 }

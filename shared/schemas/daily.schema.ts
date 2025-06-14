@@ -6,7 +6,7 @@ export const DailyEntrySchema = z.object({
       return new Date(arg);
     }
   }, z.date()),
-  mood: z.string(),
+  mood: z.array(z.string()),
   productivity: z.number(),
   sleepHours: z.number(),
   expenses: z.array(

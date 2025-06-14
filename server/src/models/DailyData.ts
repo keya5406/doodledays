@@ -13,7 +13,7 @@ export interface Task{
 export interface DailyData extends Document {
     user: Types.ObjectId;
     date: Date;
-    mood: string;
+    mood: string[];
     productivity: number;
     expenses: Expense[];
     sleepHours: number;
@@ -33,7 +33,7 @@ const TaskSchema: Schema = new Schema({
 const DailyDataSchema: Schema = new Schema({
     user: { type: Types.ObjectId, ref: 'User', required: true },
     date: { type: Date, required: true },
-    mood: { type: String, required: true },
+    mood: { type: [String], default: [] },
     productivity: { type: Number, required: true },
     expenses: [ExpenseSchema],
     sleepHours: { type: Number, required: true },
