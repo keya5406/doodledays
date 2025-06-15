@@ -21,7 +21,7 @@ const UserSchema: Schema = new Schema({
     },
     passwordHash: { type: String, required: true },
     notificationPreferences: {
-        emailNotifications: { type: Boolean, default: true },
+        emailNotifications: { type: Boolean, default: false },
         pushNotifications: { type: Boolean, default: false }
     }
 }, {

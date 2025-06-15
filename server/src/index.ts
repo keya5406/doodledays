@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js";
 import dailyRoutes from "./routes/daily.route.js"; 
 import aggregationRoutes from "./routes/aggregation.routes.js";
+import notificationsRouter from "./routes/notifications.route.js";
 import cors from "cors";
 
 
@@ -23,6 +24,8 @@ app.use("/api/auth", authRoutes);
 
 app.use("/api/daily", dailyRoutes);
 app.use("/api/aggregation", aggregationRoutes);
+app.use('/api/notifications', notificationsRouter);
+
 
 mongoose
   .connect(process.env.MONGO_URI!)
