@@ -15,6 +15,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { HoverButton } from "@/components/ui/HoverButton";
 import { Label } from "@/components/ui/label"
+import { subscribeUserToPush } from "@/utils/pushSubscription";
+
 
 const LoginForm = () => {
   const [error, setError] = useState("")
@@ -33,10 +35,13 @@ const LoginForm = () => {
       const res = await loginUser(data);
       setSuccess("Login successful!");
       setError("");
-      console.log("User logged in:", res);
-      localStorage.setItem("token", res.token); 
+      
+      localStorage.setItem("token", res.token);
+      localStorage.setItem("userId", res.user.id.toString());
+      await subscribeUserToPush(res.user.id, res.token);
+
       setTimeout(() => {
-        navigate("/entry"); 
+        navigate("/entry");
       }, 1000);
     } catch (err: any) {
       setError(err.response?.data?.message || "Something went wrong");

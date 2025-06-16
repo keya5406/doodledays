@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IPushSubscription extends Document {
-  userId: string;
+  userId: mongoose.Types.ObjectId;   
   endpoint: string;
   keys: {
     p256dh: string;
@@ -10,7 +10,7 @@ export interface IPushSubscription extends Document {
 }
 
 const PushSubscriptionSchema: Schema = new Schema({
-  userId: { type: String, required: true },
+  userId: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
   endpoint: { type: String, required: true },
   keys: {
     p256dh: { type: String, required: true },

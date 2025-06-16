@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { Types } from 'mongoose';
 import PushSubscription from '../models/PushSubscription';
 import UserModel from '../models/User';
 
@@ -10,12 +11,18 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
+    if (!Types.ObjectId.isValid(userId)) {
+        res.status(400).json({ message: 'Invalid userId format' });
+        return;
+    }
+
     try {
+        const objectUserId = new Types.ObjectId(userId);
 
         await PushSubscription.findOneAndUpdate(
-            { userId, endpoint: subscription.endpoint },
+            { userId: objectUserId, endpoint: subscription.endpoint },
             {
-                userId,
+                userId: objectUserId,
                 endpoint: subscription.endpoint,
                 keys: {
                     p256dh: subscription.keys.p256dh,
@@ -25,14 +32,13 @@ export const subscribe = async (req: Request, res: Response): Promise<void> => {
             { upsert: true, new: true }
         );
 
-
-        await UserModel.findByIdAndUpdate(userId, {
+        await UserModel.findByIdAndUpdate(objectUserId, {
             'notificationPreferences.pushNotifications': true
         });
 
         res.status(201).json({ message: 'Subscription saved and preferences updated' });
     } catch (err) {
-        console.error(err);
+        console.error('Error saving subscription:', err);
         res.status(500).json({ message: 'Server error' });
     }
 };
