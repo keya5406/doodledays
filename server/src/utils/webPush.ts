@@ -1,14 +1,15 @@
 import webPush from 'web-push';
 
-const vapidKeys = {
-  publicKey: process.env.VAPID_PUBLIC_KEY!,
-  privateKey: process.env.VAPID_PRIVATE_KEY!,
-};
+export function initializeWebPush(): void {
+  const { VAPID_EMAIL, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY } = process.env;
 
-webPush.setVapidDetails(
-  process.env.VAPID_EMAIL!,
-  vapidKeys.publicKey,
-  vapidKeys.privateKey
-);
+  if (!VAPID_EMAIL || !VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
+    throw new Error("Missing VAPID configuration (EMAIL, PUBLIC_KEY, or PRIVATE_KEY)");
+  }
+
+  webPush.setVapidDetails(VAPID_EMAIL, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+
+  console.log("WebPush initialized with VAPID keys");
+}
 
 export default webPush;

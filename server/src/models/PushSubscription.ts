@@ -10,7 +10,7 @@ export interface IPushSubscription extends Document {
 }
 
 const PushSubscriptionSchema: Schema = new Schema({
-  userId: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
+  userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
   endpoint: { type: String, required: true },
   keys: {
     p256dh: { type: String, required: true },
