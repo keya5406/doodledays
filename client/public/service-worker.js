@@ -1,13 +1,15 @@
 self.addEventListener('push', function(event) {
-  const data = event.data.json();
+  console.log("[Service Worker] Push Received.");
+
+  const data = event.data?.json();
 
   const options = {
-    body: data.body,
+    body: data.body || "Default body",
     icon: '/icon.png',
     badge: '/badge.png'
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title, options)
+    self.registration.showNotification(data.title || "Default title", options)
   );
 });

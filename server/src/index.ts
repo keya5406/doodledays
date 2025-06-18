@@ -13,7 +13,13 @@ import aggregationRoutes from './routes/aggregation.routes.js';
 import notificationsRouter from './routes/notifications.route.js';
 import notificationRoutes from './routes/notification.routes.js';
 import { initializeWebPush } from './utils/webPush';
+import { startReminderScheduler } from './utils/reminderScheduler';
+
+
+startReminderScheduler();
+
 initializeWebPush();
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
